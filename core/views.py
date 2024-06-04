@@ -15,7 +15,7 @@ OUTPUT_DIR = MODULE_DIR / 'output'
 
 if not inferencing_module:
     print('====== inferencing module imported ========')
-    inferencing_module = importlib.import_module('implementation')
+    inferencing_module = importlib.import_module('inference/implementation')
 
 if not builder_class:
     if not inferencing_module:
