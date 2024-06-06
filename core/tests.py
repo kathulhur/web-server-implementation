@@ -17,7 +17,7 @@ class InferenceEndpointTest(APITestCase):
             image_path.open('rb').read(),
         )
         file_2 = SimpleUploadedFile(
-            'file2.png',
+            'file2.pt',
             image_path.open('rb').read(),
         )
 
@@ -41,7 +41,7 @@ class InferenceEndpointTest(APITestCase):
             )
 
             file_3 = SimpleUploadedFile(
-                'file2.png',
+                'file2.pt',
                 image_path.open('rb').read(),
             )
 
@@ -53,24 +53,42 @@ class InferenceEndpointTest(APITestCase):
             self.assertIn('input_files', response.data)
 
     def test_model_artifacts_length_does_not_match(self):
-            file_1 = SimpleUploadedFile(
-                'file1.png',
-                image_path.open('rb').read(),
-            )
-            file_2 = SimpleUploadedFile(
-                'file2.png',
-                image_path.open('rb').read(),
-            )
+        file_1 = SimpleUploadedFile(
+            'file1.png',
+            image_path.open('rb').read(),
+        )
+        file_2 = SimpleUploadedFile(
+            'file3.pt',
+            image_path.open('rb').read(),
+        )
 
-            file_3 = SimpleUploadedFile(
-                'file2.png',
-                image_path.open('rb').read(),
-            )
+        file_3 = SimpleUploadedFile(
+            'file3.pt',
+            image_path.open('rb').read(),
+        )
 
-            response = self.client.post('/inference/', {
-                'input_files': [file_1],
-                'model_artifacts': [file_2, file_3]
-            })
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-            self.assertIn('model_artifacts', response.data)
+        response = self.client.post('/inference/', {
+            'input_files': [file_1],
+            'model_artifacts': [file_2, file_3]
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('model_artifacts', response.data)
+
+    def test_model_artifacts_with_invalid_file_extensions_not_allowed(self):
+        file_1 = SimpleUploadedFile(
+            'file1.png',
+            image_path.open('rb').read(),
+        )
+        file_2 = SimpleUploadedFile(
+            'file2.png',
+            image_path.open('rb').read(),
+        )
+
+
+        response = self.client.post('/inference/', {
+            'input_files': [file_1],
+            'model_artifacts': [file_2]
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('model_artifacts', response.data)
 
