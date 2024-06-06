@@ -26,11 +26,11 @@ if not builder_class:
     builder_class = getattr(inferencing_module, 'builder_class')
 
 
-if not builder_class:
+if not inference_metadata:
     if not inferencing_module:
         raise ImportError('Inferencing module is missing')
     
-    print('====== builder class imported ========')
+    print('====== inference metadata imported ========')
     inference_metadata = getattr(inferencing_module, 'inference_metadata')
 
 
@@ -48,8 +48,8 @@ class InferenceView(APIView):
             raise APIException('Inferencing module was not properly setup')
 
         model_artifacts_file_paths = [MODULE_DIR / 'yolov8n.pt']
-        modelBuilder: abstraction.ModelBuilder = builder_class(model_artifacts_file_paths)
-        model: abstraction.Model = modelBuilder.build_model()
+        modelBuilder: abstraction.ModelBuilder = builder_class()
+        model: abstraction.Model = modelBuilder.build(model_artifacts_file_paths)
         sample_image_inputs_file_path = [ MODULE_DIR / 'image.png']
         result = model.infer(sample_image_inputs_file_path)
 
