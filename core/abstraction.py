@@ -8,6 +8,11 @@ InferenceResult = TypedDict('InferenceResult', {
     'type': str,
     'info': dict
 })
+
+InferenceMetadata = TypedDict('InferenceResult', {
+    'input_files': list[list[str]],
+    'model_artifacts': list[list[str]]
+})
      
 class Model:
     """
