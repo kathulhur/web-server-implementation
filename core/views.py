@@ -1,4 +1,4 @@
-import importlib, pathlib
+import importlib, pathlib, json
 from . import abstraction
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -9,6 +9,7 @@ from django.http import HttpResponse
 
 inferencing_module = None
 builder_class = None
+inference_metadata = None
 
 MODULE_DIR = pathlib.Path(__file__).parent
 OUTPUT_DIR = MODULE_DIR / 'output'
@@ -25,10 +26,23 @@ if not builder_class:
     builder_class = getattr(inferencing_module, 'builder_class')
 
 
-class InferencingView(APIView):
+if not builder_class:
+    if not inferencing_module:
+        raise ImportError('Inferencing module is missing')
+    
+    print('====== builder class imported ========')
+    inference_metadata = getattr(inferencing_module, 'inference_metadata')
 
 
+class InformationView(APIView):
+    def get(self, request):
+        return HttpResponse(
+            json.dumps(inference_metadata).encode(), 
+            status=200, 
+            content_type='application/json'
+        )
 
+class InferenceView(APIView):
     def get(self, request):
         if not inferencing_module or not builder_class:
             raise APIException('Inferencing module was not properly setup')
@@ -44,4 +58,8 @@ class InferencingView(APIView):
         with result['data'].open('rb') as f:
             data = f.read()
 
-        return HttpResponse(data, content_type=result['type'], status=200)
+        return HttpResponse(
+            data, 
+            content_type=result['type'], 
+            status=200
+        )
