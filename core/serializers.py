@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from django.core.files.uploadedfile import TemporaryUploadedFile, InMemoryUploadedFile
-from . import abstraction
 from . import common
 
 
@@ -16,12 +15,12 @@ class InferenceSerializer(serializers.Serializer):
 
     def validate_input_files(self, value):
         if len(value) != len(common.inference_metadata['input_files']):
-            raise serializers.ValidationError(f'There must be {len(common.inference_metadata['input_files'])} input files attached')
+            raise serializers.ValidationError(f'There must be {len(common.inference_metadata["input_files"])} input files attached')
         return value
 
     def validate_model_artifacts(self, value: list[TemporaryUploadedFile | InMemoryUploadedFile]):
         if len(value) != len(common.inference_metadata['model_artifacts']):
-            raise serializers.ValidationError(f'There must be {len(common.inference_metadata['model_artifacts'])} model artifacts attached')
+            raise serializers.ValidationError(f'There must be {len(common.inference_metadata["model_artifacts"])} model artifacts attached')
 
 
         for i in range(len(value)):

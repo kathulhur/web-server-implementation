@@ -25,7 +25,39 @@ class InferenceEndpointTest(APITestCase):
             'input_files': [file_1],
             'model_artifacts': [file_2]
         })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.headers.get('Content-Type'), 'image/png')
+    def test_multiple_inference(self):
 
+        file_1 = SimpleUploadedFile(
+            'file1.png',
+            image_path.open('rb').read(),
+        )
+        file_2 = SimpleUploadedFile(
+            'file2.pt',
+            image_path.open('rb').read(),
+        )
+
+        response = self.client.post('/inference/', {
+            'input_files': [file_1],
+            'model_artifacts': [file_2]
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.headers.get('Content-Type'), 'image/png')
+        
+        file_1 = SimpleUploadedFile(
+            'file1.png',
+            image_path.open('rb').read(),
+        )
+        file_2 = SimpleUploadedFile(
+            'file2.pt',
+            image_path.open('rb').read(),
+        )
+
+        response = self.client.post('/inference/', {
+            'input_files': [file_1],
+            'model_artifacts': [file_2]
+        })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.headers.get('Content-Type'), 'image/png')
 
