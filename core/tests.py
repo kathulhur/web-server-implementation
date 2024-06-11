@@ -4,22 +4,24 @@ from rest_framework import status
 import pathlib
 # Create your tests here.
 
-module_path = pathlib.Path(__file__).parent
-image_path = module_path / 'assets' / 'image.png'
-
+MODULE_PATH = pathlib.Path(__file__).parent
+image_path = MODULE_PATH / 'assets' / 'image.png'
+yolov8_path = MODULE_PATH / 'assets' / 'yolov8n.pt' 
 
 class InferenceEndpointTest(APITestCase):
 
     def test_inference(self):
-
-        file_1 = SimpleUploadedFile(
-            'file1.png',
-            image_path.open('rb').read(),
+        with image_path.open('rb') as f:
+            file_1 = SimpleUploadedFile(
+                'file1.png',
+                f.read(),
         )
-        file_2 = SimpleUploadedFile(
-            'file2.pt',
-            image_path.open('rb').read(),
-        )
+            
+        with yolov8_path.open('rb') as f:
+            file_2 = SimpleUploadedFile(
+                'file2.pt',
+                f.read(),
+            )
 
         response = self.client.post('/inference/', {
             'input_files': [file_1],
@@ -27,16 +29,20 @@ class InferenceEndpointTest(APITestCase):
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.headers.get('Content-Type'), 'image/png')
+
     def test_multiple_inference(self):
 
-        file_1 = SimpleUploadedFile(
-            'file1.png',
-            image_path.open('rb').read(),
+        with image_path.open('rb') as f:
+            file_1 = SimpleUploadedFile(
+                'file1.png',
+                f.read(),
         )
-        file_2 = SimpleUploadedFile(
-            'file2.pt',
-            image_path.open('rb').read(),
-        )
+            
+        with yolov8_path.open('rb') as f:
+            file_2 = SimpleUploadedFile(
+                'file2.pt',
+                f.read(),
+            )
 
         response = self.client.post('/inference/', {
             'input_files': [file_1],
@@ -45,14 +51,17 @@ class InferenceEndpointTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.headers.get('Content-Type'), 'image/png')
         
-        file_1 = SimpleUploadedFile(
-            'file1.png',
-            image_path.open('rb').read(),
+        with image_path.open('rb') as f:
+            file_1 = SimpleUploadedFile(
+                'file1.png',
+                f.read(),
         )
-        file_2 = SimpleUploadedFile(
-            'file2.pt',
-            image_path.open('rb').read(),
-        )
+            
+        with yolov8_path.open('rb') as f:
+            file_2 = SimpleUploadedFile(
+                'file2.pt',
+                f.read(),
+            )
 
         response = self.client.post('/inference/', {
             'input_files': [file_1],
@@ -63,19 +72,23 @@ class InferenceEndpointTest(APITestCase):
 
 
     def test_input_files_length_does_not_match(self):
-            file_1 = SimpleUploadedFile(
-                'file1.png',
-                image_path.open('rb').read(),
+            with image_path.open('rb') as f:
+                file_1 = SimpleUploadedFile(
+                    'file1.png',
+                    f.read(),
             )
-            file_2 = SimpleUploadedFile(
-                'file2.png',
-                image_path.open('rb').read(),
+                
+            with image_path.open('rb') as f:
+                file_2 = SimpleUploadedFile(
+                    'file2.png',
+                    f.read(),
             )
-
-            file_3 = SimpleUploadedFile(
-                'file2.pt',
-                image_path.open('rb').read(),
-            )
+                
+            with yolov8_path.open('rb') as f:
+                file_3 = SimpleUploadedFile(
+                    'file3.pt',
+                    f.read(),
+                )
 
             response = self.client.post('/inference/', {
                 'input_files': [file_1, file_2],
@@ -85,19 +98,23 @@ class InferenceEndpointTest(APITestCase):
             self.assertIn('input_files', response.data)
 
     def test_model_artifacts_length_does_not_match(self):
-        file_1 = SimpleUploadedFile(
-            'file1.png',
-            image_path.open('rb').read(),
-        )
-        file_2 = SimpleUploadedFile(
-            'file3.pt',
-            image_path.open('rb').read(),
-        )
+        with image_path.open('rb') as f:
+            file_1 = SimpleUploadedFile(
+                'file1.png',
+                f.read(),
+            )
+            
+        with yolov8_path.open('rb') as f:
+            file_2 = SimpleUploadedFile(
+                'file2.pt',
+                f.read(),
+            )
 
-        file_3 = SimpleUploadedFile(
-            'file3.pt',
-            image_path.open('rb').read(),
-        )
+        with yolov8_path.open('rb') as f:
+            file_3 = SimpleUploadedFile(
+                'file3.pt',
+                f.read(),
+            )
 
         response = self.client.post('/inference/', {
             'input_files': [file_1],
@@ -107,14 +124,17 @@ class InferenceEndpointTest(APITestCase):
         self.assertIn('model_artifacts', response.data)
 
     def test_model_artifacts_with_invalid_file_extensions_not_allowed(self):
-        file_1 = SimpleUploadedFile(
-            'file1.png',
-            image_path.open('rb').read(),
-        )
-        file_2 = SimpleUploadedFile(
-            'file2.png',
-            image_path.open('rb').read(),
-        )
+        with image_path.open('rb') as f:
+            file_1 = SimpleUploadedFile(
+                'file1.png',
+                f.read(),
+            )
+            
+        with yolov8_path.open('rb') as f:
+            file_2 = SimpleUploadedFile(
+                'file2.pta',
+                f.read(),
+            )
 
 
         response = self.client.post('/inference/', {

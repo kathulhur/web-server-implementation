@@ -76,11 +76,13 @@ class InferenceView(APIView):
             return Response('Server Error', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         finally:
-            if input_file_paths:
-                for file_path in input_file_paths:
-                    os.remove(file_path)
+            pass
+            # Find a way to clean up the file without causing os exception
+            # if input_file_paths:
+            #     for file_path in input_file_paths:
+            #         os.remove(file_path)
 
-            if model_artifacts_file_paths:
-                for file_path in model_artifacts_file_paths:
-                    os.remove(file_path)
+            # if model_artifacts_file_paths:
+            #     for file_path in model_artifacts_file_paths:
+            #         os.remove(file_path)
 
