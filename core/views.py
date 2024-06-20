@@ -76,8 +76,9 @@ class InferenceView(APIView):
         except APIException as e:
             return Response(serializer.errors, content_type='application/json', status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception:
-            return Response('Server Error', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            print(e)
+            return Response({ 'message': 'Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         finally:
             pass
