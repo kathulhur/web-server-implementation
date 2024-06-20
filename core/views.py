@@ -64,8 +64,12 @@ class InferenceView(APIView):
                 model: abstraction.Model = modelBuilder.build(model_artifacts_file_paths)
                 result = model.infer(input_file_paths)
 
+                resultData = None
+                with open(result['data'], 'rb') as f:
+                    resultData = f.read()
+
                 return HttpResponse(
-                    result.get('data').open('rb').read(), 
+                    resultData, 
                     content_type=result['type'],
                     status=200
                 )

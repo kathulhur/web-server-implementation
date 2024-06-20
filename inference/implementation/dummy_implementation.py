@@ -13,7 +13,7 @@ class DummyModel(Model):
     """
     def infer(self, input_file_paths: list[str]) -> InferenceResult:
         return {
-            'data': module_path / 'assets' / 'image.png',
+            'data': str(module_path / 'assets' / 'image.png'),
             'type': 'image/png',
             'info': {}
         }
