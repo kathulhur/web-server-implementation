@@ -14,7 +14,7 @@ if not model_builder_class:
     if not inferencing_module:
         raise ImportError('Inferencing module is missing')
     
-    model_builder_class = getattr(inferencing_module, 'builder_class')
+    model_builder_class = getattr(inferencing_module, 'model_builder_class')
 
 
 if not inference_metadata:
