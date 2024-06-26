@@ -27,14 +27,14 @@ class InferenceView(APIView):
 
     def post(self, request):
         serializer = InferenceSerializer(data=request.data)
-        if not common.inferencing_module or not common.builder_class:
+        if not common.inferencing_module or not common.model_builder_class:
             raise APIException('Inferencing module was not properly setup')
         model_artifacts_file_paths = None
         input_file_paths = None
         try:
             if serializer.is_valid(raise_exception=True):
 
-                modelBuilder: abstraction.ModelBuilder = common.builder_class()
+                modelBuilder: abstraction.ModelBuilder = common.model_builder_class()
 
                 input_files: List[Union[InMemoryUploadedFile, TemporaryUploadedFile]] = serializer.validated_data.get('input_files')
                 model_artifacts: List[Union[InMemoryUploadedFile, TemporaryUploadedFile]] = serializer.validated_data.get('model_artifacts')
